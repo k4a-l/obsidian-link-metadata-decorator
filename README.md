@@ -1,90 +1,106 @@
-# Obsidian Sample Plugin
+[![PayPal](https://github.com/user-attachments/assets/022d3ada-7995-4a27-b680-5ab6cfc117e1)](https://paypal.me/k4al)
+[!["Buy Me A Coffee"](https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png)](https://www.buymeacoffee.com/kasahala)
 
-This is a sample plugin for Obsidian (https://obsidian.md).
+# Obsidian Link Metadata Decorator
 
-This project uses TypeScript to provide type checking and documentation.
-The repo depends on the latest plugin API (obsidian.d.ts) in TypeScript Definition format, which contains TSDoc comments describing what it does.
+Link Metadata Decorator is a plugin for [Obsidian](https://obsidian.md) that allows you to add icons, text, and custom styles to intDecorate links based on the frontmatter, tags, or file path of the linked file.
+**Note: This plugin currently supports Live Preview only.**
 
-This sample plugin demonstrates some of the basic functionality the plugin API can do.
-- Adds a ribbon icon, which shows a Notice when clicked.
-- Adds a command "Open modal (simple)" which opens a Modal.
-- Adds a plugin setting tab to the settings page.
-- Registers a global click event and output 'click' to the console.
-- Registers a global interval which logs 'setInterval' to the console.
+## Features
 
-## First time developing plugins?
+- **Decorate Links**: Add icons and text before or after internal links.
+- **Metadata Matching**: Apply decorations based on the linked note's **Tags** or **Frontmatter** properties.
+- **Custom CSS Classes**: Add custom CSS classes to links for unlimited styling possibilities.
+- **Live Preview Support**: Decorations appear directly in the editor while typing (except when the cursor is on the link).
 
-Quick starting guide for new plugin devs:
+> **Note**: While editing, decorations may occasionally appear unnaturally. Refocusing or prompting a redraw will usually fix this.
 
-- Check if [someone already developed a plugin for what you want](https://obsidian.md/plugins)! There might be an existing plugin similar enough that you can partner up with.
-- Make a copy of this repo as a template with the "Use this template" button (login to GitHub if you don't see it).
-- Clone your repo to a local development folder. For convenience, you can place this folder in your `.obsidian/plugins/your-plugin-name` folder.
-- Install NodeJS, then run `npm i` in the command line under your repo folder.
-- Run `npm run dev` to compile your plugin from `main.ts` to `main.js`.
-- Make changes to `main.ts` (or create new `.ts` files). Those changes should be automatically compiled into `main.js`.
-- Reload Obsidian to load the new version of your plugin.
-- Enable plugin in settings window.
-- For updates to the Obsidian API run `npm update` in the command line under your repo folder.
+## Example
 
-## Releasing new releases
+Default live preview:
 
-- Update your `manifest.json` with your new version number, such as `1.0.1`, and the minimum Obsidian version required for your latest release.
-- Update your `versions.json` file with `"new-plugin-version": "minimum-obsidian-version"` so older versions of Obsidian can download an older version of your plugin that's compatible.
-- Create new GitHub release using your new version number as the "Tag version". Use the exact version number, don't include a prefix `v`. See here for an example: https://github.com/obsidianmd/obsidian-sample-plugin/releases
-- Upload the files `manifest.json`, `main.js`, `styles.css` as binary attachments. Note: The manifest.json file must be in two places, first the root path of your repository and also in the release.
-- Publish the release.
+![live-preview-default.png](https://raw.githubusercontent.com/k4a-l/obsidian-link-metadata-decorator/refs/heads/main/assets/live-preview-default.png)
 
-> You can simplify the version bump process by running `npm version patch`, `npm version minor` or `npm version major` after updating `minAppVersion` manually in `manifest.json`.
-> The command will bump version in `manifest.json` and `package.json`, and add the entry for the new version to `versions.json`
+After configuration:
 
-## Adding your plugin to the community plugin list
+![live-preview-result.png](https://raw.githubusercontent.com/k4a-l/obsidian-link-metadata-decorator/refs/heads/main/assets/live-preview-result.png)
 
-- Check the [plugin guidelines](https://docs.obsidian.md/Plugins/Releasing/Plugin+guidelines).
-- Publish an initial version.
-- Make sure you have a `README.md` file in the root of your repo.
-- Make a pull request at https://github.com/obsidianmd/obsidian-releases to add your plugin.
+Settings:
 
-## How to use
+- [data.json](https://github.com/k4a-l/obsidian-link-metadata-decorator/blob/main/assets/example/data.json)
+- [style.css](https://github.com/k4a-l/obsidian-link-metadata-decorator/blob/main/assets/example/styles.css)
 
-- Clone this repo.
-- Make sure your NodeJS is at least v16 (`node --version`).
-- `npm i` or `yarn` to install dependencies.
-- `npm run dev` to start compilation in watch mode.
+## Usage
 
-## Manually installing the plugin
+### 1. Create a Rule
 
-- Copy over `main.js`, `styles.css`, `manifest.json` to your vault `VaultFolder/.obsidian/plugins/your-plugin-id/`.
+Go to **Settings > Link Metadata Decorator** and click **"Add Rule"**.
 
-## Improve code quality with eslint
-- [ESLint](https://eslint.org/) is a tool that analyzes your code to quickly find problems. You can run ESLint against your plugin to find common bugs and ways to improve your code. 
-- This project already has eslint preconfigured, you can invoke a check by running`npm run lint`
-- Together with a custom eslint [plugin](https://github.com/obsidianmd/eslint-plugin) for Obsidan specific code guidelines.
-- A GitHub action is preconfigured to automatically lint every commit on all branches.
+#### **Target**: Choose matching strategy
 
-## Funding URL
+All target metadata of the linked file.
 
-You can include funding URLs where people who use your plugin can financially support it.
+- `Tag`: Match by a specific tag.
+- `Frontmatter`: Match by a frontmatter property.
+- `Metadata (Advanced Script)`: Use JavaScript to inspect metadata (`tags`, `frontmatter`, `name`)  and dynamically determining decorations.
 
-The simple way is to set the `fundingUrl` field to your link in your `manifest.json` file:
+#### Target: Tag
 
-```json
-{
-    "fundingUrl": "https://buymeacoffee.com"
+- Tag Name: Enter the tag name (without `#`).
+- Position: Choose `After Link` or `Before Link`.
+- Custom CSS Class: A class name to add to the link and decoration (e.g., `todo`).
+- Text Append: Text to display next to the link
+- Icon Append: Obsidian Icon ID to display (e.g., `lucide-check-circle`).   [Browse available icons here](https://fevol.github.io/obsidian-notes/utils/icons/)
+
+#### Target: Frontmatter
+
+- Frontmatter Key: Enter the frontmatter property name.
+- Value to match: Enter the value to match.
+  - Supports JS expressions `(v:string):boolean` (eg: `` `v => v>10` ``).
+- Position: Same as Tag.
+- Custom CSS Class: Same as Tag.
+  - Supports JS expressions `(v:string):string)` (eg: `` `v=> v>10 ? "over" : "in-range"` ``).
+- Text Append: Same as Tag.
+  - Supports JS expressions. Same as Custom CSS Class.
+- Icon Append: Same as Tag.
+  - Supports JS expressions. Same to Custom CSS Class.
+
+#### Target: Metadata
+
+##### Script
+
+type:
+
+```typescript
+type Func = (meta: { tags: string[]; frontmatter: Record<string, any> }) => {
+    before?: { icon?: string; text?: string };
+    after?: { icon?: string; text?: string };
+    classname?: string;
+};
+    
+```
+
+eg:
+
+```javascript
+(meta) => {
+    if (meta.tags.includes("active"))
+        return { after: { icon: "lucide-check" }, classname: "active" };
 }
 ```
 
-If you have multiple URLs, you can also do:
+#### Eval Function of frontmatter value
 
-```json
-{
-    "fundingUrl": {
-        "Buy Me a Coffee": "https://buymeacoffee.com",
-        "GitHub Sponsor": "https://github.com/sponsors",
-        "Patreon": "https://www.patreon.com/"
-    }
-}
-```
+### 2. Styling with CSS
 
-## API Documentation
+By assigning a **Custom CSS Class** in the rule settings, you can control the appearance of specific links completely.
 
-See https://docs.obsidian.md
+#### Base Classes
+
+The plugin uses the following classes structure:
+
+- `.lmd-decoration`: The container for the added icon/text.
+- `.lmd-pos-before`: Added when position is "Before Link".
+- `.lmd-pos-after`: Added when position is "After Link".
+- `.lmd-icon`: The icon container.
+- `.lmd-link-text`: Added to the link itself if a Custom CSS Class is set.

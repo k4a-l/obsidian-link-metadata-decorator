@@ -1,8 +1,31 @@
-/*
+/* CSS for Link Metadata Decorator */
+/* Base Decoration Style */
+.lmd-decoration {
+    display: inline-flex;
+    align-items: center;
+    vertical-align: middle;
+    gap: 4px; 
+    font-size: 0.8em;
+    color: var(--text-muted);
+}
 
-This CSS file will be included with your plugin, and
-available in the app when your plugin is enabled.
+/* Position Utilities */
+.lmd-pos-after {
+    margin-left: 4px;
+}
 
-If your plugin does not need CSS, delete this file.
+.lmd-pos-before {
+    margin-right: 4px;
+}
 
-*/
+/* Icon Sizing */
+.lmd-icon {
+    display: inline-flex;
+    align-items: center;
+}
+
+.lmd-icon svg {
+    width: 1.1em;
+    height: 1.1em;
+    stroke-width: 2px;
+}

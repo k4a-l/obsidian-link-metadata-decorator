@@ -1,11 +1,15 @@
 {
-	"id": "sample-plugin",
-	"name": "Sample Plugin",
+	"id": "obsidian-link-metadata-decorator",
+	"name": "Link Metadata Decorator",
 	"version": "1.0.0",
 	"minAppVersion": "0.15.0",
-	"description": "Demonstrates some of the capabilities of the Obsidian API.",
-	"author": "Obsidian",
-	"authorUrl": "https://obsidian.md",
-	"fundingUrl": "https://obsidian.md/pricing",
+	"description": "Decorates internal links based on the metadata (tags, frontmatter) of the linked note.",
+	"author": "kasahala",
+	"authorUrl": "https://github.com/k4a-l/obsidian-link-metadata-decorator",
+	"fundingUrl": {
+		"Buy Me a Coffee": "https://buymeacoffee.com/kasahala",
+		"GitHub Sponsor": "https://github.com/sponsors/k4a-l",
+		"PayPal": "https://www.paypal.com/paypalme/k4al"
+	},
 	"isDesktopOnly": false
 }
