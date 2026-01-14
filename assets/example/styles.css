@@ -1,0 +1,36 @@
+.lmd-decoration.todo {
+    border: 1px solid var(--interactive-accent);
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-weight: bold;
+    font-size: 0.75em;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+}
+
+.lmd-link-text-live-preview.todo a {
+    background-color: var(--interactive-accent);
+    color: var(--text-on-accent);
+    padding: 1px 6px;
+    border-radius: 4px;
+}
+
+
+.lmd-link-text-live-preview.todo:hover a {
+    background-color: var(--interactive-accent-hover);
+}
+
+.lmd-link-text-live-preview.valid a::after {
+    content: "😀";
+}
+
+.lmd-decoration{
+    &.valid  {
+    color: green;
+    font-weight: bold;
+}
+
+    &.overdue  {
+        color: red;
+        font-weight: bold;
+    }
+}

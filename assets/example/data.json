@@ -1,0 +1,46 @@
+{
+  "rules": [
+    {
+      "id": "1768404957339",
+      "target": "tag",
+      "key": "todo",
+      "value": "",
+      "color": "#ff0000",
+      "text": "☐",
+      "icon": "alarm-clock",
+      "cssClass": "todo",
+      "position": "after"
+    },
+    {
+      "id": "1768405542995",
+      "target": "tag",
+      "key": "done",
+      "value": "",
+      "color": "#ff0000",
+      "text": "✅️",
+      "icon": "alarm-clock",
+      "cssClass": "done",
+      "position": "before"
+    },
+    {
+      "id": "1768413853438",
+      "target": "metadata",
+      "key": "star",
+      "value": "({ name, tags, frontmatter }) => {\n    \n    if (tags.includes(\"done\")) return { after:{text:\"☆\".repeat(Number(frontmatter.star))}}\n    if (!frontmatter.deadline) return {}\n\n    return (new Date(frontmatter.deadline) < new Date(Date.now())) ? { after: { text: \"over\" }, classname: \"overdue\" } : { after: { text: \"valid\" }, classname: \"valid\" }\n}",
+      "text": "`(v)=>\"☆\".repeat(Number(v))`",
+      "icon": "",
+      "position": "after",
+      "cssClass": ""
+    },
+    {
+      "id": "1768416228695",
+      "target": "frontmatter",
+      "key": "actor",
+      "value": "",
+      "text": "`actor => actor`",
+      "icon": "",
+      "position": "after",
+      "cssClass": ""
+    }
+  ]
+}
