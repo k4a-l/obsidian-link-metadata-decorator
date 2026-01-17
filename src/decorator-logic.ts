@@ -1,4 +1,4 @@
-import { type CachedMetadata, setIcon, type TFile } from "obsidian";
+import { setIcon } from "obsidian";
 import { DecorationClasses } from "./constants";
 import type { DecorationRule } from "./settings";
 
@@ -6,13 +6,18 @@ export interface MatchedRule extends DecorationRule {
 	dynamicCssClass?: string;
 }
 
+export interface MetadataInfo {
+	tags: string[];
+	frontmatter: Record<string, unknown>;
+	basename: string;
+}
+
 export function findMatchingRules(
 	rules: DecorationRule[],
-	cache: CachedMetadata,
-	file?: TFile,
+	metadata: MetadataInfo,
 ): MatchedRule[] {
-	const tags = cache.tags?.map((t) => t.tag) || [];
-	const frontmatter = cache.frontmatter || {};
+	const tags = metadata.tags || [];
+	const frontmatter = metadata.frontmatter || {};
 	const matches: MatchedRule[] = [];
 
 	for (const rule of rules) {
@@ -20,9 +25,9 @@ export function findMatchingRules(
 			// Advanced Script Evaluation
 			// 1. Prepare Metadata Object
 			const meta = {
-				name: file?.basename || "Untitled",
-				frontmatter: cache.frontmatter || {},
-				tags: cache.tags?.map((t) => t.tag.replace(/^#/, "")) || [],
+				name: metadata.basename || "Untitled",
+				frontmatter: frontmatter,
+				tags: tags.map((t) => t.replace(/^#/, "")),
 			};
 
 			let script = rule.value.trim();
@@ -111,7 +116,7 @@ export function findMatchingRules(
 					// Merge with existing dynamic class from value match if any
 					matchedRule.dynamicCssClass =
 						(matchedRule.dynamicCssClass
-							? matchedRule.dynamicCssClass + " "
+							? `${matchedRule.dynamicCssClass} `
 							: "") + dynamicCss;
 					// Clear static cssClass so it's not applied as a literal class name
 					matchedRule.cssClass = "";
@@ -169,22 +174,7 @@ function isRuleMatched(
 
 			if (jsMatch) {
 				try {
-					// Create a function from the string body
-					// Expected format: (v) => ... or just return ...
-					// We'll wrap it to ensure it receives 'v'
 					const body = jsMatch[1];
-					// Simple heuristic: if it looks like an arrow function, eval it.
-					// Otherwise, treat as expression returning condition/string.
-					// Safer: evaluate usage.
-					// Accepted format: `(v) => condition` or `(v) => "classname" or null`
-
-					// Use Function constructor.
-					// We pass 'v' as argument name.
-					// If the user provided `(v) => ...`, evaluating it gives a function.
-					// If they provided expression `v > 10`, we might need to wrap.
-					// Let's assume the user provides an ARROW FUNCTION string inside backticks.
-					// e.g. `(v) => v > 10 ? 'active' : ''`
-
 					// eslint-disable-next-line no-new-func
 					const func = new Function(`return ${body}`)();
 					if (typeof func === "function") {

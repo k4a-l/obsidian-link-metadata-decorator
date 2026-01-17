@@ -1,7 +1,7 @@
 {
 	"id": "obsidian-link-metadata-decorator",
 	"name": "Link Metadata Decorator",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"minAppVersion": "0.15.0",
 	"description": "Decorates internal links based on the metadata (tags, frontmatter) of the linked note.",
 	"author": "kasahala",

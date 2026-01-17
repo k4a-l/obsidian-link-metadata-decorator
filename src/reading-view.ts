@@ -42,7 +42,11 @@ function processLink(
 	file: TFile,
 ) {
 	// 1. Find Matching Rules (Shared Logic)
-	const matchedRules = findMatchingRules(plugin.settings.rules, cache, file);
+	const matchedRules = findMatchingRules(plugin.settings.rules, {
+		tags: cache.tags?.map((t) => t.tag) || [],
+		frontmatter: cache.frontmatter || {},
+		basename: file.basename,
+	});
 
 	if (matchedRules.length === 0) return;
 

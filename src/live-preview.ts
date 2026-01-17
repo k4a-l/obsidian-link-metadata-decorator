@@ -68,10 +68,17 @@ export const buildLinkMetadataDecorations = (
 					update.focusChanged ||
 					update.selectionSet
 				) {
-					// Delay for click
-					setTimeout(() => {
-						this.decorations = this.buildDecorations(update.view);
-					}, 1);
+					// 現在のビューの状態をキャプチャ
+					const currentView = update.view;
+					const currentDocLength = currentView.state.doc.length;
+
+					// requestAnimationFrame を使用してクリック後の更新を安全に処理
+					requestAnimationFrame(() => {
+						// ビューの状態が変わっていないか確認
+						if (currentView.state.doc.length === currentDocLength) {
+							this.decorations = this.buildDecorations(currentView);
+						}
+					});
 				}
 			}
 
@@ -79,6 +86,11 @@ export const buildLinkMetadataDecorations = (
 
 			buildDecorations(view: EditorView): DecorationSet {
 				const builder = new RangeSetBuilder<Decoration>();
+
+				// テーブルセルなどのサブエディタを除外
+				if (!isMainEditor(view)) {
+					return builder.finish();
+				}
 
 				// Helper: Get current file and cache
 				const file = getActiveFile(view, app);
@@ -116,11 +128,11 @@ export const buildLinkMetadataDecorations = (
 					if (!linkedCache) continue;
 
 					// 2. Find Matching Rules (Shared Logic)
-					const matchedRules = findMatchingRules(
-						plugin.settings.rules,
-						linkedCache,
-						linkedFile,
-					);
+					const matchedRules = findMatchingRules(plugin.settings.rules, {
+						tags: linkedCache.tags?.map((t) => t.tag) || [],
+						frontmatter: linkedCache.frontmatter || {},
+						basename: linkedFile.basename,
+					});
 
 					if (matchedRules.length > 0) {
 						// 3. Create Decorations
@@ -157,6 +169,40 @@ export const buildLinkMetadataDecorations = (
 	);
 
 // --- Helper Functions ---
+
+function isMainEditor(view: EditorView): boolean {
+	let element: HTMLElement | null = view.dom;
+
+	// テーブルセルエディタなど、特定のサブエディタを明示的に除外
+	while (element) {
+		// テーブル関連のクラスをチェック
+		if (
+			element.classList?.contains("table-cell-wrapper") ||
+			element.classList?.contains("cm-table-widget") ||
+			element.classList?.contains("HyperMD-table-row")
+		) {
+			return false;
+		}
+
+		// markdown-source-view を見つけた場合
+		if (element.classList?.contains("markdown-source-view")) {
+			// さらに、このビューが直接の子かどうかを確認
+			// サブエディタの場合、markdown-source-view と view.dom の間に
+			// 他の要素が挟まっている
+			const parent = view.dom.parentElement;
+			// 直接の親が cm-scroller または cm-content の場合、メインエディタ
+			return (
+				parent?.classList?.contains("cm-scroller") ||
+				parent?.classList?.contains("cm-content") ||
+				false
+			);
+		}
+
+		element = element.parentElement;
+	}
+
+	return false;
+}
 
 function getActiveFile(view: EditorView, app: App): TFile | null {
 	const file =
